@@ -18,16 +18,15 @@ def getfiles():
 
 def find_public():
     public_funcs = set()
+
     for name in getfiles():
         with open(name) as f:
-            for line in f:
-                # find public functions
-                mo = PUBLIC_SEARCH.search(line)
-                if mo:
-                    public_funcs.add(mo.group(1))
+            public_funcs.update(
+                mo.group(1) for line in f if (mo := PUBLIC_SEARCH.search(line))
+            )
 
     for f in sorted(public_funcs):
-        print('#define {0:<18} PyBlake2_{0}'.format(f))
+        print(f'#define {f:<18} PyBlake2_{f}')
 
     return public_funcs
 
